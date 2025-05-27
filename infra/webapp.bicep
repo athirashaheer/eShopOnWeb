@@ -7,19 +7,18 @@ var appServicePlanName = toLower('AppServicePlan-${webAppName}')
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: appServicePlanName
   location: location
-  properties: {
-    reserved: true
-  }
   sku: {
     name: sku
+    capacity: 1 // Define the instance count
   }
 }
+
 resource appService 'Microsoft.Web/sites@2022-09-01' = {
   name: webAppName
   kind: 'app'
   location: location
   properties: {
-    serverFarmId: appServicePlan.id
+    serverFarmId: resourceId('Microsoft.Web/serverfarms', appServicePlan.name)
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|8.0'
       appSettings: [
